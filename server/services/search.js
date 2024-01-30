@@ -13,30 +13,44 @@
 const _ = require("lodash");
 const deepPopulate = require("./../helpers/populate").default;
 
-const loopThroughObject = (obj) => {
-  for (var key in obj) {
+const navigateObject = (obj) => {
+  let result = [];
+
+  for (let key in obj) {
+    // Check if the property is part of the object and not its prototype
     if (obj.hasOwnProperty(key)) {
-      if (Array.isArray(obj[key])) {
-        // If the current field is an array, loop through its elements
-        obj[key].forEach(function (element) {
-          // Check if the element is an object
-          if (typeof element === "object") {
-            // If the element is an object, recursively call the function
-            loopThroughObject(element);
-          } else {
-            // If the element is not an object, you can process it here
-            console.log(key + ": " + element);
-          }
-        });
-      } else if (typeof obj[key] === "object") {
-        // If the current field is an object, recursively call the function
-        loopThroughObject(obj[key]);
-      } else {
-        // If the current field is not an object or an array, you can process it here
-        console.log(key + ": " + obj[key]);
+      if (
+        typeof obj[key] !== "object" &&
+        !Array.isArray(obj[key]) &&
+        obj[key] !== null
+      ) {
+        console.log("Key:", key, "Value:", obj[key]);
+        result.push({ [key]: obj[key] });
+      }
+
+      // If the property is an object, call the function recursively
+      if (typeof obj[key] === "object" && obj[key] !== null) {
+        if (Array.isArray(obj[key])) {
+          // If it's an array, iterate through its elements
+          obj[key].forEach((element) => {
+            if (typeof element === "object" && element !== null) {
+              //navigateObject(element);
+              result = result.concat(navigateObject(element));
+            } else {
+              //console.log("Array Element:", element);
+              result.push(element);
+            }
+          });
+        } else {
+          // It's an object, not an array
+          //navigateObject(obj[key]);
+          result = result.concat(navigateObject(obj[key]));
+        }
       }
     }
   }
+
+  return result;
 };
 
 module.exports = ({ strapi }) => ({
@@ -116,32 +130,45 @@ module.exports = ({ strapi }) => ({
         }
 
         let entries = await strapi.entityService.findMany(entity.name, {
-          ///populate: "*",
           ...condition,
         });
 
         _.each(entries, (entry) => {
-          let test = loopThroughObject(entry);
+          let propArray = navigateObject(
+            _.omit(entry, [
+              "localizations",
+              "createdBy",
+              "createdAt",
+              "publishedAt",
+              "updatedAt",
+              "updatedBy",
+              "locale",
+              "id",
+            ])
+          );
 
-          let data = _.pick(entry, entity.fields);
-
-          _.forOwn(data, function (value, key) {
-            //data = { ...data, entity_id: entry.id, entity: entity.name };
-            // promises.push(
-            //   strapi.entityService.create("plugin::indexed-search.search", {
-            //     data: {
-            //       entity_id: entry.id,
-            //       entity: entity.name,
-            //       content: value,
-            //     },
-            //   })
-            // );
+          _.each(propArray, (item, key) => {
+            if (entity.fields.indexOf(Object.keys(item)[0]) > -1) {
+              promises.push(
+                strapi.entityService.create(
+                  "plugin::indexed-search-multilingual.search",
+                  {
+                    data: {
+                      entity_id: entry.id,
+                      entity: entity.name,
+                      content: item[Object.keys(item)[0]],
+                      locale: code,
+                    },
+                  }
+                )
+              );
+            }
           });
         });
       }
     }
 
-    //await Promise.all(promises);
+    await Promise.all(promises);
 
     return "data synced";
   },
