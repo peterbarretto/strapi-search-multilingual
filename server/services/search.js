@@ -11,6 +11,33 @@
 "use strict";
 
 const _ = require("lodash");
+const deepPopulate = require("./../helpers/populate").default;
+
+const loopThroughObject = (obj) => {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (Array.isArray(obj[key])) {
+        // If the current field is an array, loop through its elements
+        obj[key].forEach(function (element) {
+          // Check if the element is an object
+          if (typeof element === "object") {
+            // If the element is an object, recursively call the function
+            loopThroughObject(element);
+          } else {
+            // If the element is not an object, you can process it here
+            console.log(key + ": " + element);
+          }
+        });
+      } else if (typeof obj[key] === "object") {
+        // If the current field is an object, recursively call the function
+        loopThroughObject(obj[key]);
+      } else {
+        // If the current field is not an object or an array, you can process it here
+        console.log(key + ": " + obj[key]);
+      }
+    }
+  }
+};
 
 module.exports = ({ strapi }) => ({
   async globalSearch(ctx) {
@@ -82,7 +109,8 @@ module.exports = ({ strapi }) => ({
     let promises = [];
     for (const { code } of cultures) {
       for (let entity of entities) {
-        let condition = { populate: "*" };
+        //let condition = { populate: "*" };
+        let condition = { populate: deepPopulate(entity.name), locale: code };
         if (entity.filters) {
           condition.filters = entity.filters;
         }
@@ -93,25 +121,27 @@ module.exports = ({ strapi }) => ({
         });
 
         _.each(entries, (entry) => {
+          let test = loopThroughObject(entry);
+
           let data = _.pick(entry, entity.fields);
 
           _.forOwn(data, function (value, key) {
             //data = { ...data, entity_id: entry.id, entity: entity.name };
-            promises.push(
-              strapi.entityService.create("plugin::indexed-search.search", {
-                data: {
-                  entity_id: entry.id,
-                  entity: entity.name,
-                  content: value,
-                },
-              })
-            );
+            // promises.push(
+            //   strapi.entityService.create("plugin::indexed-search.search", {
+            //     data: {
+            //       entity_id: entry.id,
+            //       entity: entity.name,
+            //       content: value,
+            //     },
+            //   })
+            // );
           });
         });
       }
     }
 
-    await Promise.all(promises);
+    //await Promise.all(promises);
 
     return "data synced";
   },
