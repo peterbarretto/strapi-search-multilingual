@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useCallback, useEffect } from 'react';
-import { Button } from '@strapi/design-system/Button';
-import Download from '@strapi/icons/Download';
-import { axiosInstance } from './utils';
-import { useNotification, useQueryParams } from '@strapi/helper-plugin';
-import { useLocation } from 'react-router-dom';
-import { stringify } from 'qs';
-import { getData, getDataSucceeded } from './actions';
-import { COLLECTION_ENTITIES } from './constants';
+import React, { useState, useCallback, useEffect } from "react";
+import { Button } from "@strapi/design-system/Button";
+import Download from "@strapi/icons/Download";
+import { axiosInstance } from "./utils";
+import { useNotification, useQueryParams } from "@strapi/helper-plugin";
+import { useLocation } from "react-router-dom";
+import { stringify } from "qs";
+import { getData, getDataSucceeded } from "./actions";
+import { COLLECTION_ENTITIES } from "./constants";
 
 const SyncButton = () => {
   const [displaySyncButton, setDisplaySyncButtonState] = useState(true);
@@ -18,7 +18,7 @@ const SyncButton = () => {
   const queryParam = `?${stringify(query, { encode: false })}`;
   // console.log("queryParam:", queryParam);
   useEffect(() => {
-    var model = pathname.split('/').reverse()[0];
+    var model = pathname.split("/").reverse()[0];
     // console.log("pathname:", pathname, " || query", query);
     if (COLLECTION_ENTITIES.indexOf(model) > -1) {
       setDisplaySyncButtonState(true);
@@ -27,8 +27,8 @@ const SyncButton = () => {
 
   const handleSync = useCallback(async () => {
     setIsLoading(true);
-    var model = pathname.split('/').reverse()[0];
-    await axiosInstance.post(`/content-manager/${model}/sync`);
+    var model = pathname.split("/").reverse()[0];
+    await axiosInstance.get(`/indexed-search-multilingual/sync/sync`);
 
     try {
       getData();
@@ -38,15 +38,15 @@ const SyncButton = () => {
       } = await axiosInstance.get(path);
       getDataSucceeded(paginationResult, results);
       toggleNotification({
-        type: 'success',
-        message: 'Sync completed successfully',
+        type: "success",
+        message: "Sync completed successfully",
       });
       setIsLoading(false);
       window.location.reload();
     } catch (err) {
       toggleNotification({
-        type: 'error',
-        message: 'Sync not completed',
+        type: "error",
+        message: "Sync not completed",
       });
     }
   }, [toggleNotification, getData, getDataSucceeded]);
