@@ -172,4 +172,45 @@ module.exports = ({ strapi }) => ({
 
     return "data synced";
   },
+
+  async syncSingleItem(entity, name) {
+    const cultures = await strapi.plugins.i18n.services.locales.find();
+    let searchEntity = _.find(
+      strapi.config.get("search.entities", "defaultValueIfUndefined"),
+      (item) => item.name === name
+    );
+
+    for (const { code } of cultures) {
+      if (entity.locale === code) {
+        let propArray = navigateObject(
+          _.omit(entity, [
+            "localizations",
+            "createdBy",
+            "createdAt",
+            "publishedAt",
+            "updatedAt",
+            "updatedBy",
+            "locale",
+            "id",
+          ])
+        );
+
+        _.each(propArray, (item, key) => {
+          if (searchEntity.fields.indexOf(Object.keys(item)[0]) > -1) {
+            strapi.entityService.create(
+              "plugin::indexed-search-multilingual.search",
+              {
+                data: {
+                  entity_id: entity.id,
+                  entity: searchEntity.name,
+                  content: item[Object.keys(item)[0]],
+                  locale: code,
+                },
+              }
+            );
+          }
+        });
+      }
+    }
+  },
 });
