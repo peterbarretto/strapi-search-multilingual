@@ -55,23 +55,27 @@ const navigateObject = (obj) => {
 
 module.exports = ({ strapi }) => ({
   async globalSearch(ctx) {
-    const { term, pagination } = ctx.request.query;
+    const { term, pagination, locale } = ctx.request.query;
     const pageNumber = pagination?.page ? parseInt(pagination.page) : 1;
     const limit = parseInt(
       pagination?.pageSize ??
-        strapi.config.get("constants.DEFAULT_RESPONSE_LIMIT")
+      strapi.config.get("constants.DEFAULT_RESPONSE_LIMIT")
     );
     const start = limit * (pageNumber - 1);
 
     //let query = `select *  from searches order by id offset ${start} limit ${limit};`;
-    let query = `select * from searches where content ilike '%${term}%'`;
+    let query = `select * from searches where content ilike '%${term}%' and locale='${locale}'`;
 
     const knex = strapi.db.connection.context;
     let queryResult = await knex.raw(query);
 
+    queryResult.rows = _.uniqBy(queryResult.rows, (item) => {
+      return `${item.entity_id}-${item.entity}`;
+    });
+
     const rowCount = queryResult?.rows?.length;
     const totalPages = Math.ceil(queryResult?.rows?.length / limit);
-    //const nextPage = totalPages > pageNumber ? pageNumber + 1 : pageNumber;
+
     queryResult.rows = queryResult.rows.slice(start, pageNumber * limit);
 
     const searchGrouped = _.groupBy(queryResult.rows, "entity");
@@ -88,6 +92,7 @@ module.exports = ({ strapi }) => ({
           populate: {
             Seo: true,
           },
+          locale,
         }),
       };
       entity.results = _.sortBy(entity.results, (obj) =>
