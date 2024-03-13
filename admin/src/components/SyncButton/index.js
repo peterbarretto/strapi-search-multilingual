@@ -10,7 +10,7 @@ import { getData, getDataSucceeded } from "./actions";
 import { COLLECTION_ENTITIES } from "./constants";
 
 const SyncButton = () => {
-  const [displaySyncButton, setDisplaySyncButtonState] = useState(true);
+  const [displaySyncButton, setDisplaySyncButtonState] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const toggleNotification = useNotification();
   const { pathname } = useLocation();
