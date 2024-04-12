@@ -20,6 +20,14 @@ module.exports = ({ strapi }) => {
 
     for (let entity of entities) {
       if (entity.name === listener.uid) {
+        strapi.db
+          .query("plugin::indexed-search-multilingual.search")
+          .deleteMany({
+            where: {
+              entity_id: listener.entry.id,
+              entity: listener.uid
+            },
+          });
         await strapi
           .plugin("indexed-search-multilingual")
           .service("search")
@@ -38,6 +46,7 @@ module.exports = ({ strapi }) => {
           .deleteMany({
             where: {
               entity_id: listener.entry.id,
+              entity: listener.uid
             },
           });
       }
