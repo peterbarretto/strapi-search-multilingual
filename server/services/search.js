@@ -184,9 +184,17 @@ module.exports = ({ strapi }) => ({
       strapi.config.get("search.entities", "defaultValueIfUndefined"),
       (item) => item.name === name
     );
-
+    //check if we want to filter entries based on filters in config file
+    const filters = (strapi.config.get("constants.SEARCH_FILTERS") && searchEntity?.filters) ?  searchEntity?.filters :null;
     for (const { code } of cultures) {
       if (entity.locale === code) {
+        let filtered = false;
+        if(filters){
+          filtered = await this.checkFilters(entity,filters);
+        }
+        //since not matching filters skip this entry
+        if(filtered)
+          continue;
         let propArray = navigateObject(
           _.omit(entity, [
             "localizations",
@@ -218,4 +226,13 @@ module.exports = ({ strapi }) => ({
       }
     }
   },
+
+  //check the filters macth for the entry
+  async checkFilters(entity, filters) {
+  for(const index in filters){
+      if(entity[index]!=filters[index])
+        return true;
+    }
+    return false;
+  }
 });
