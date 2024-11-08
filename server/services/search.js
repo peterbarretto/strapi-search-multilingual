@@ -146,7 +146,7 @@ module.exports = ({ strapi }) => ({
     for (const { code } of cultures) {
       for (let entity of entities) {
         //let condition = { populate: "*" };
-
+        if(!entity?.publishedAt) return true;
         if (searchFilters) {
           let searchEntity = _.find(
             entities,
@@ -241,6 +241,7 @@ module.exports = ({ strapi }) => ({
     );
     const searchFilters = strapi.config.get("search.search_filters") || null;
 
+    if(!entity?.publishedAt) return true;
     for (const { code } of cultures) {
       if (entity.locale === code) {
         if (searchFilters) {
