@@ -113,7 +113,7 @@ module.exports = ({ strapi }) => ({
 
     let countRows = {};
     if (type) {
-      let queryAll = `select Count(*),entity,entity_id from searches where ${filter_term} locale=:locale group by entity,entity_id`;
+      let queryAll = `select Count(*),entity,entity_id,original_entity from searches where ${filter_term} locale=:locale group by entity,entity_id,original_entity`;
       let queryResultAll = await knex.raw(queryAll, typeBindings);
       countRows = _.groupBy(queryResultAll.rows, "entity");
     } else {
