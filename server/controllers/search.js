@@ -23,4 +23,10 @@ module.exports = ({ strapi }) => ({
       .service("search")
       .syncEntries(ctx);
   },
+  async autoComplete(ctx) {
+    return await strapi
+      .plugin("indexed-search-multilingual")
+      .service("search")
+      .autoComplete(ctx);
+  },
 });

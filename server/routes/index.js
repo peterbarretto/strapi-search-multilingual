@@ -17,4 +17,13 @@ module.exports = [
       auth: false,
     },
   },
+  {
+    method: 'GET',
+    path: '/search/autocomplete',
+    handler: 'search.autoComplete',
+    config: {
+      policies: [],
+      auth: false,
+    },
+  },
 ];
