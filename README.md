@@ -2,7 +2,7 @@
 
 ![](https://github.com/peterbarretto/strapi-search-multilingual)
 
-Working on Strapi version: v4.*.*
+Working on Strapi version: v4
 
 ## First Setup
 
