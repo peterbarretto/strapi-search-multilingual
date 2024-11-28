@@ -1,6 +1,6 @@
-# Strapi plugin simple-strapi-auth
+# Strapi plugin Strapi-Search-Multilingual
 
-![](https://github.com/pdalvi1893/simple-auth)
+![](https://github.com/peterbarretto/strapi-search-multilingual)
 
 Working on Strapi version: v4.*.*
 
@@ -14,12 +14,12 @@ npm install strapi-indexed-search
 
 ```
 
-2. Check the below api's to generate token and refresh token
+2. Check the below api's to search and sync search
 
 ```bash
 http://localhost:1337/indexed-search/sync/sync'
 
-# Refresh Token generation Curl
+# Search API Curl
 
 http://localhost:1337/indexed-search/search'
 
