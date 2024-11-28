@@ -1,4 +1,5 @@
 # Strapi plugin search multilingual
+# Strapi plugin Strapi-Search-Multilingual
 
 ![](https://github.com/peterbarretto/strapi-search-multilingual)
 
