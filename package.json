@@ -1,12 +1,12 @@
 {
-  "name": "strapi-indexed-search-multilingual",
-  "version": "1.0.4",
-  "description": "This is the description of the plugin.",
+  "name": "strapi-search-multilingual",
+  "version": "1.0.0",
+  "description": "Simple strapi 4 multilingual search",
   "strapi": {
-    "name": "indexed-search-multilingual",
+    "name": "strapi-search-multilingual",
     "description": "Helps search all collections in strapi",
     "kind": "plugin",
-    "displayName": "Strapi Indexed Search Multilingual"
+    "displayName": "Strapi 4 Search Multilingual"
   },
   "dependencies": {
     "@strapi/design-system": "^1.6.3",
