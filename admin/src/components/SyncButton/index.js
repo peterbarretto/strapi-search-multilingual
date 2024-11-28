@@ -28,7 +28,7 @@ const SyncButton = () => {
   const handleSync = useCallback(async () => {
     setIsLoading(true);
     var model = pathname.split("/").reverse()[0];
-    await axiosInstance.get(`/indexed-search-multilingual/sync/sync`);
+    await axiosInstance.get(`/strapi-search-multilingual/sync/sync`);
 
     try {
       getData();

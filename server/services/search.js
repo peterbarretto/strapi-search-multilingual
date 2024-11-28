@@ -224,7 +224,7 @@ module.exports = ({ strapi }) => ({
             _.each(Values, (item) => {
               if (item)
                 strapi.entityService.create(
-                  "plugin::indexed-search-multilingual.search",
+                  "plugin::strapi-search-multilingual.search",
                   {
                     data: {
                       entity_id: entityItem.id,
@@ -264,7 +264,7 @@ module.exports = ({ strapi }) => ({
               if (entity.fields.indexOf(Object.keys(item)[0]) > -1) {
                 promises.push(
                   strapi.entityService.create(
-                    "plugin::indexed-search-multilingual.search",
+                    "plugin::strapi-search-multilingual.search",
                     {
                       data: {
                         entity_id: entry.id,
@@ -367,7 +367,7 @@ module.exports = ({ strapi }) => ({
             });
             if (content) {
               strapi.entityService.create(
-                "plugin::indexed-search-multilingual.search",
+                "plugin::strapi-search-multilingual.search",
                 {
                   data: {
                     entity_id: entity.id,
@@ -398,7 +398,7 @@ module.exports = ({ strapi }) => ({
           _.each(propArray, (item, key) => {
             if (searchEntity.fields.indexOf(Object.keys(item)[0]) > -1) {
               strapi.entityService.create(
-                "plugin::indexed-search-multilingual.search",
+                "plugin::strapi-search-multilingual.search",
                 {
                   data: {
                     entity_id: entity.id,
@@ -417,7 +417,7 @@ module.exports = ({ strapi }) => ({
   async autoComplete(ctx) {
     const { term, locale } = ctx.request.query;
     const theEntities = await strapi.entityService.findMany(
-      "plugin::indexed-search-multilingual.search",
+      "plugin::strapi-search-multilingual.search",
       {
         fields: ["title"],
         filters: {

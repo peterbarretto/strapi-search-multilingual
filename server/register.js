@@ -8,7 +8,7 @@ module.exports = ({ strapi }) => {
     for (let entity of entities) {
       if (entity.name === listener.uid) {
         await strapi
-          .plugin("indexed-search-multilingual")
+          .plugin("strapi-search-multilingual")
           .service("search")
           .syncSingleItem(listener.entry, entity.name);
       }
@@ -21,7 +21,7 @@ module.exports = ({ strapi }) => {
     for (let entity of entities) {
       if (entity.name === listener.uid) {
         strapi.db
-          .query("plugin::indexed-search-multilingual.search")
+          .query("plugin::strapi-search-multilingual.search")
           .deleteMany({
             where: {
               entity_id: listener.entry.id,
@@ -29,7 +29,7 @@ module.exports = ({ strapi }) => {
             },
           });
         await strapi
-          .plugin("indexed-search-multilingual")
+          .plugin("strapi-search-multilingual")
           .service("search")
           .syncSingleItem(listener.entry, entity.name);
       }
@@ -42,7 +42,7 @@ module.exports = ({ strapi }) => {
     for (let entity of entities) {
       if (entity.name === listener.uid) {
         strapi.db
-          .query("plugin::indexed-search-multilingual.search")
+          .query("plugin::strapi-search-multilingual.search")
           .deleteMany({
             where: {
               entity_id: listener.entry.id,

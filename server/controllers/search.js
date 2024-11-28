@@ -13,19 +13,19 @@
 module.exports = ({ strapi }) => ({
   async index(ctx) {
     return await strapi
-      .plugin("indexed-search-multilingual")
+      .plugin("strapi-search-multilingual")
       .service("search")
       .globalSearch(ctx);
   },
   async syncEntries(ctx) {
     ctx.body = strapi
-      .plugin("indexed-search-multilingual")
+      .plugin("strapi-search-multilingual")
       .service("search")
       .syncEntries(ctx);
   },
   async autoComplete(ctx) {
     return await strapi
-      .plugin("indexed-search-multilingual")
+      .plugin("strapi-search-multilingual")
       .service("search")
       .autoComplete(ctx);
   },
