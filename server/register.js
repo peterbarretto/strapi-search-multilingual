@@ -19,14 +19,19 @@ module.exports = ({ strapi }) => {
     const entities = strapi.config.get("search.entities");
 
     for (let entity of entities) {
-      if (entity.name === listener.uid) {
+      if (entity.name === listener.uid && !entity?.repeated) {
+        const where = {
+          entity_id: listener.entry.id,
+          entity: listener.uid,
+        };
+        if (entity?.frontend_entity) {
+          where.original_entity = listener.uid;
+          delete where.entity;
+        }
         strapi.db
           .query("plugin::strapi-search-multilingual.search")
           .deleteMany({
-            where: {
-              entity_id: listener.entry.id,
-              entity: listener.uid
-            },
+            where,
           });
         await strapi
           .plugin("strapi-search-multilingual")
@@ -40,14 +45,19 @@ module.exports = ({ strapi }) => {
     const entities = strapi.config.get("search.entities");
 
     for (let entity of entities) {
-      if (entity.name === listener.uid) {
+      if (entity.name === listener.uid && !entity?.repeated) {
+        const where = {
+          entity_id: listener.entry.id,
+          entity: listener.uid,
+        };
+        if (entity?.frontend_entity) {
+          where.original_entity = listener.uid;
+          delete where.entity;
+        }
         strapi.db
           .query("plugin::strapi-search-multilingual.search")
           .deleteMany({
-            where: {
-              entity_id: listener.entry.id,
-              entity: listener.uid
-            },
+            where,
           });
       }
     }
