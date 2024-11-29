@@ -119,7 +119,7 @@ module.exports = ({ strapi }) => ({
     } else {
       countRows = _.groupBy(queryResult.rows, "entity");
     }
-    const finalCount = search?.map?.final_count;
+    const finalCount = Object.assign({}, search?.map?.final_count);
 
     for (const index in finalCount) {
       switch (index) {
@@ -146,14 +146,18 @@ module.exports = ({ strapi }) => ({
     for (let key in searchGrouped) {
       let queryKey = key;
       let orderedList = _.map(searchGrouped[key], ({ entity_id }) => entity_id);
-      const populate = {
-        Seo: true,
-      };
-      //if entity is company then populate Sector
-      if (key == "api::company.company")
-        populate.Sector = {
-          fields: ["Title", "SectorSlug"],
-        };
+
+      let populate = search?.default_populate || {};
+      const customPopulate = search?.custom_populate || {};
+
+      //get custom populate
+      if (customPopulate.length > 0) {
+        const custom = _.find(customPopulate, (item) => item.name === key);
+        if (custom) {
+          populate = { ...populate, ...custom.populate };
+        }
+      }
+
       if (searchGrouped[key][0]?.original_entity)
         queryKey = searchGrouped[key][0]?.original_entity;
       let entity = {
