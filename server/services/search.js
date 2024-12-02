@@ -420,14 +420,19 @@ module.exports = ({ strapi }) => ({
   },
   async autoComplete(ctx) {
     const { term, locale } = ctx.request.query;
+    const search = strapi.config.get("search", "defaultValueIfUndefined");
+
+    //check if to search with contains or startwith strapi filter
+    const auto_complete = search?.auto_complete?.search_by && search.auto_complete.search_by === 'contains' ? '$containsi' : '$startsWithi';
+    const title = {
+      [auto_complete]:term
+    };
     const theEntities = await strapi.entityService.findMany(
       "plugin::strapi-search-multilingual.search",
       {
         fields: ["title"],
         filters: {
-          title: {
-            $containsi: term,
-          },
+          title,
         },
         locale,
       }

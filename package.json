@@ -1,6 +1,6 @@
 {
   "name": "strapi-search-multilingual",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Simple strapi 4 multilingual search",
   "strapi": {
     "name": "strapi-search-multilingual",

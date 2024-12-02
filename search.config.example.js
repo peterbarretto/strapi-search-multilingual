@@ -50,6 +50,21 @@ module.exports = {
         "api::news.news":0,
         "api::publication.publication":0
       }
+    },
+    default_populate:{
+      PageSlug: true,
+      Thumbnail: true
+    },
+    custom_populate:[
+      {
+        name: "api::news.news",
+        populate: {
+          news_categories :true
+        }
+      }
+    ],
+    autocomplete:{
+      search_by: 'startswith' //contains or startswith is default
     }
   };
   
