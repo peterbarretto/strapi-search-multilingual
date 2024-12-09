@@ -54,4 +54,4 @@ npm install strapi-search-mulitlingual
 
 ## References
 
-- [Forked from ](pdalvi1893/strapi-strapi-search-multilingual)
+- [Forked from ](pdalvi1893/strapi-indexed-search-multilingual)

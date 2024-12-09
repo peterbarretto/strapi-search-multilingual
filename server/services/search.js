@@ -299,7 +299,12 @@ module.exports = ({ strapi }) => ({
     );
     const searchFilters = strapi.config.get("search.search_filters") || null;
 
-    if (!entity?.publishedAt) return true;
+    //check if content type has draft mode
+    const contentType = await strapi.plugin('content-manager').service('content-types').findContentType(name);
+
+    //if draft mode exist then skip the entry if not published
+    if (contentType?.options?.draftAndPublish === true && !entity?.publishedAt) return true;
+    
     for (const { code } of cultures) {
       if (entity.locale === code) {
         if (searchFilters) {
