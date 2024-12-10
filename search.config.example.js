@@ -20,6 +20,20 @@ module.exports = {
         fields: ["PageTitle", "ShortDescription"],
         title: "PageTitle"
       },
+      {
+        name: "api::case.case",
+        fields: ["PageTitle", "PageDescription"],
+        title: "PageTitle",
+        match_filters: { Category: { ParentPage: 2 } },
+        frontend_entity: "api::de.de"
+      },
+      {
+        name: "api::learning.learning",
+        fields: ["PageTitle", "PageDescription"],
+        title: "PageTitle",
+        match_filters: { Category: { ParentPage: 2 } },
+        frontend_entity: "api::de.de",
+      },
     ],
     search_filters: true,
     map:{
@@ -41,6 +55,16 @@ module.exports = {
           original_entity: "api::news-and-publication.news-and-publication",
           filters: { Type: "Publication" },
         },
+        {
+          passed: "api::de.de",
+          original_entity: "api::case.case",
+          filters: { Category: { ParentPage: 2 } },
+        },
+        {
+          passed: "api::de.de",
+          original_entity: "api::learning.learning",
+          filters: { Category: { ParentPage: 2 } },
+        },
       ],
       final_count : {
         all: 0,
@@ -48,7 +72,8 @@ module.exports = {
         "api::resource.resource":0,
         "api::initiative.initiative":0,
         "api::news.news":0,
-        "api::publication.publication":0
+        "api::publication.publication":0,
+        "api::de.de":0
       }
     },
     default_populate:{

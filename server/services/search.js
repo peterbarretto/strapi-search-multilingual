@@ -87,13 +87,24 @@ module.exports = ({ strapi }) => ({
     const typeBindings = { locale };
     if (type) {
       if (otherApis.includes(type)) {
-        const found = different_original.find(
+        const found = different_original.filter(
           (element) => element.passed === type
         );
         type_filter = ` and entity = :type`;
-        if (found) {
-          type_filter += ` and original_entity = :original_entity`;
-          bindings.original_entity = found.original_entity;
+        if (found.length>0) {
+          type_filter += ` and ( `;
+          let i = 1;
+          let theKey = '';
+          for (const each of found){
+            if(i!==1)
+              type_filter += ` OR `;
+            type_filter += `original_entity = :original_entity${i}`;
+            theKey = `original_entity${i}`
+            bindings[theKey] = each.original_entity
+            i++;
+          }
+          type_filter += ` ) `;
+          
         }
         bindings.type = type;
       }
@@ -140,28 +151,32 @@ module.exports = ({ strapi }) => ({
 
     queryResult.rows = queryResult.rows.slice(start, pageNumber * limit);
 
-    const searchGrouped = _.groupBy(queryResult.rows, "entity");
+    const searchGrouped = _.groupBy(queryResult.rows, (item) => {
+      // Create a composite key from multiple columns
+      return `${item.entity}_${item.original_entity || 'default'}`;
+    });
 
     let results = [];
-    for (let key in searchGrouped) {
-      let queryKey = key;
-      let orderedList = _.map(searchGrouped[key], ({ entity_id }) => entity_id);
+    for (let compositeKey in searchGrouped) {
+      // Split the composite key if needed
+      const [theentity, originalEntity] = compositeKey.split('_');
 
       let populate = search?.default_populate || {};
       const customPopulate = search?.custom_populate || {};
 
       //get custom populate
       if (customPopulate.length > 0) {
-        const custom = _.find(customPopulate, (item) => item.name === key);
+        const custom = _.find(customPopulate, (item) => item.name === theentity);
         if (custom) {
           populate = { ...populate, ...custom.populate };
         }
       }
 
-      if (searchGrouped[key][0]?.original_entity)
-        queryKey = searchGrouped[key][0]?.original_entity;
+      let queryKey = originalEntity !== 'default' ? originalEntity : theentity;
+  
+      let orderedList = _.map(searchGrouped[compositeKey], ({ entity_id }) => entity_id);
       let entity = {
-        api: key,
+        api: theentity,
         results: await strapi.entityService.findMany(queryKey, {
           filters: {
             id: orderedList, //_.map(searchGrouped[key], ({ entity_id }) => entity_id),
@@ -175,7 +190,7 @@ module.exports = ({ strapi }) => ({
       );
       entity.results = _.map(entity.results, (item) => ({
         ...item,
-        entity: key,
+        entity: theentity,
       }));
       results = results.concat(entity.results);
     }
