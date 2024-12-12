@@ -10,16 +10,7 @@ Working on Strapi version: v4
 
 ```bash
 # install dependencies
-npm install strapi-search-mulitlingual
-
-```
-
-2. Add the configuration as shown in search.config.example.js in config/search.js
-
-## Note
-```bash
-# install dependencies
-npm install strapi-search-mulitlingual
+npm i strapi-search-multilingual
 
 ```
 
