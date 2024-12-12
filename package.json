@@ -1,10 +1,10 @@
 {
   "name": "strapi-search-multilingual",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Simple strapi 4 multilingual search",
   "strapi": {
     "name": "strapi-search-multilingual",
-    "description": "Helps search all collections in strapi",
+    "description": "Helps search all collections in strapi, inside components and dynamic zones also",
     "kind": "plugin",
     "displayName": "Strapi 4 Search Multilingual"
   },
@@ -27,6 +27,15 @@
     "react-router-dom": "^5.2.0",
     "styled-components": "^5.2.1"
   },
+  "keywords": [
+    "strapi 4",
+    "search",
+    "multilingual search",
+    "search multilingual",
+    "search plugin",
+    "strapi 4 plugin",
+    "autocomplete"
+  ],
   "author": {
     "name": "A Strapi developer"
   },
