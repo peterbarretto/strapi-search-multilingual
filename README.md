@@ -1,69 +1,70 @@
-# Strapi search plugin multilingual
 
-![](https://github.com/peterbarretto/strapi-search-multilingual)
+# Strapi Search Multilingual 🌍🔍  
+[![npm version](https://img.shields.io/npm/v/strapi-search-multilingual)](https://www.npmjs.com/package/strapi-search-multilingual)  
+[![License](https://img.shields.io/npm/l/strapi-search-multilingual)](./LICENSE)  
+[![Downloads](https://img.shields.io/npm/dm/strapi-search-multilingual)](https://www.npmjs.com/package/strapi-search-multilingual)
 
-Working on Strapi version: v4
+Strapi Search Multilingual is a powerful plugin designed to bring multilingual full-text search capabilities to your Strapi application. 🗂️🌐 Whether you're managing a multilingual blog, e-commerce store, or any global content, this plugin simplifies search implementation across multiple languages.
 
-## First Setup
+Simple search plugin for __strapi 4__, which searches in __components__ and __dynamic zones__ also if needed.
+These components and dynamic zones field can be put in the populate in the entities search config.
+Also it provides a way to search for page titles using the Auto-complete api.
 
-1. Install as an npm dependency
+---
+
+## Features ✨
+- **Multilingual Search**: Support for searching across multiple languages effortlessly.  
+- **Full-Text Search**: Provides robust full-text search capabilities powered by MongoDB or other Strapi-supported databases. 
+- **Autocomplete Feature**: Search the titles for any entry in any collection using the autocomplete api. Specify the Title field for the collection in the config file and that field will be searched while using the autocomplete api.
+- **Customizable**: Fine-tune search fields, language preferences, and filters for your unique needs.  
+- **Easy Integration**: Seamlessly integrates into your existing Strapi application with minimal setup.  
+- **Optimized Performance**: Efficient querying for large datasets and multilingual content.  
+
+---
+
+## Installation 🚀  
+You can install this plugin using npm:  
 
 ```bash
-# install dependencies
-npm i strapi-search-multilingual
-
+npm install strapi-search-multilingual
 ```
 
-2. Add the configuration as shown in search.config.example.js in config/search.js
-Example configuration given below.
+Or with Yarn:  
 
-## Note
-1. Main configurations:
 ```bash
-#search_filters: has to set to true to use the below keys
-#entities has all the entities that need to be searched
-#name - is the collection that is present in strapi
-#fields - all the fields that need to be searched in the strapi collection
-#title - is used to specify the field that will be search for auto complete feature
-#match_filters - this is used to filter if the same collection has two different entities that need to be shown as different tabs on the search page
-#frontend_entity - this is the entity name that is used on the frontend tabs to differentiate
-
+yarn add strapi-search-multilingual
 ```
-2. Other configurations:
-```bash
-#map.others - this is used to set the list of filters that need to be filtered in the search results
-#map.map_entity - this is used to fetch the details of the entity if original_entity is set for the result entries
-#map.final_count - this is used to set all the counts that you want to use in the frontend result
-#default_populate - this is the default populate when fetching each entries details
-#custom_populate - this is for custom populating when fetching each entries details for the specified collection
 
-```
-3. Global search details:
-```bash
+---
 
-# global search api url - `/strapi-search-multilingual/search/?locale=en&type=api::publication.publication&term=a&pagination[page]=2&pagination`[pageSize]=10
-#locale - is the locale that is to be fetched from strapi
-#term - is the keyword that is used to search in the 'content' field in strapi search collection
-#type - is the type of collection to filter by, field 'entity' in strapi search collection
-#pagination.page - is page number to fetch the results from
-#pagination.pageSize - is the number of entries needed per page
+## Usage 🛠️  
 
+1. **Setup Configuration**:  
+   After installation, add the plugin to your Strapi configuration. Configure the search fields and language preferences in your `plugin` settings.  
 
-```
-3. Autocomplete search details:
-```bash
+2. **Run Your Strapi Application**:  
+   Start your Strapi server to initialize the plugin:  
 
-#auto_complete.search_by - is used for the autocomplete api whether to search the TITLE field using $startswith or $containi
+   ```bash
+   npm run develop
+   ```
 
-#auto complete api url `/strapi-search-multilingual/search/autocomplete?locale=en&term=a`
-#locale - is the locale that is to be fetched from strapi
-#term - is the keyword that is used to search in the 'title' field in strapi search collection
+3. **Use the Search API**:  
+   Query your multilingual content using the search endpoint provided by the plugin.  
+
+4. **Use the Auto complete API**:  
+   Query your multilingual Title field to get auto completed titles.  
 
 
-```
-4. Example configurations:
-```bash
-    search_filters: true,
+---
+
+## Configuration Options ⚙️  
+
+Here’s an example configuration file:  
+
+```json
+{
+  search_filters: true,
     entities: [
       { 
         name: "api::news-and-publication.news-and-publication",
@@ -127,41 +128,186 @@ Example configuration given below.
     auto_complete:{
       search_by: 'startswith' //contains or startswith , default is startswith
     }
+}
+```
 
-#search in the component for specific field, add this in entities under the specific collection
-    populate: { 
-      componentname: {    
-        populate: {
-          Description: true
-        }        
-      }
-    }    
+1. **Main Configurations:**
+- `search_filters`: has to set to true to use the below keys.
+- `entities`: has all the entities that need to be searched.
+- `name`: is the collection that is present in strapi.
+- `fields`: all the fields that need to be searched in the strapi collection.
+- `title`: is used to specify the field that will be search for auto complete feature.
+- `match_filters`: this is used to filter if the same collection has two different entities that need to be shown as different tabs on the search page.
+- `frontend_entity`: this is the entity name that is used on the frontend tabs to differentiate.
 
-#searching in the dynamic zone for specific field
-#search in the dynamic zone named 'blocks' which is inside the field 'dynamiczone' in that specific collection
-#search inside the component 'content-block' for the field 'Description'
-#so we want to search the 'Description' field inside a dynamic zone
-    populate: { 
-      dynamiczone: {
-        on: {
-          'blocks.content-block': { 
+
+2. **Other Configurations:**
+- `map.others`: this is used to set the list of filters that need to be filtered in the search results.
+- `map.map_entity`: this is used to fetch the details of the entity if original_entity is set for the result entries.
+- `map.final_count`: this is used to set all the counts that you want to use in the frontend result.
+- `default_populate`: this is the default populate when fetching each entries details.
+- `custom_populate`: this is for custom populating when fetching each entries details for the specified collection.
+
+3. **Search inside component configurations:**
+```json
+entities: [
+    { 
+        name: "api::initiative.initiative",
+        fields: ["PageTitle", "ShortDescription"],
+        title: "PageTitle"
+        populate: { 
+          componentname: {    
             populate: {
               Description: true
-            } 
+            }        
           }
         }
-      }
-    }    
+    }
+    ]
 ```
-- 
-## Features
+- `populate`: this key is used to search in the component for specific field, add this in entities under the specific collection. Here we want to search in the Description field inside the componentname
 
-- Simple search plugin for __strapi 4__, which searches in __components__ and __dynamic zones__ also if needed
-- These components and dynamic zones field can be put in the populate in the entities search config
-- There is global search at `/strapi-search-multilingual/search?term=searchtext`
-- There is __Auto complete__ which returns array of titles at `/strapi-search-multilingual/search/autocomplete?term=searchtext`
+4. **Search inside dynamic zone configurations:**
+```json
+entities: [
+    { 
+        name: "api::initiative.initiative",
+        fields: ["PageTitle", "ShortDescription"],
+        title: "PageTitle"
+        populate: { 
+          dynamiczone: {
+            on: {
+              'blocks.content-block': { 
+                populate: {
+                  Description: true
+                } 
+              }
+            }
+          }
+        }
+    }
+    ]
+```
+- `populate`: this key can also be used to search inside a dynamic zone 'blocks', add this in entities under the specific collection. Here we want to search in the Description field inside the component 'content-block'
+
+
+---
+
+## Example API Call 🖥️  
+
+#### 1. Search All collections for a search term
+
+```http
+  GET /strapi-search-multilingual/search/?locale=en&type=api::initiative.initiative&term=a&pagination[page]=2&pagination[pageSize]=10
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `term` | `string` |  text to be searched|
+| `locale` | `string` |  locale for searching, default is 'en' |
+| `type` | `string` |  filter by collection uid, eg: **api::initiative.initiative** |
+| `pagination[page]` | `string` |  page number to return in results , default is page 1|
+| `pagination[pageSize]` | `string` |  page result size|
+
+Response:  
+```json
+{
+    "data": [
+        {
+            "id": 4,
+            "PageTitle": "Test Initiative",
+            "PageSlug": "test-initiative",
+            "ShortDescription": "Short description goes here",
+            "createdAt": "2024-11-08T07:08:59.058Z",
+            "updatedAt": "2024-12-09T09:59:17.023Z",
+            "publishedAt": "2024-11-29T07:21:27.335Z",
+            "locale": "en",
+            "PublishedDate": null,
+            "PageUid": "test-initiative",
+            "Thumbnail": {
+                "id": 20,
+                "name": "Test_initiative_thumbnail.jpg",
+                "alternativeText": null,
+                "caption": null,
+                "width": 1330,
+                "height": 1060,
+                "formats": {
+                   
+                },
+                "hash": "Test_initiative_thumbnail_324ed44e96",
+                "ext": ".jpg",
+                "mime": "image/jpeg",
+                "size": 161.2,
+                "url": "/uploads/Test_initiative_thumbnail_324ed44e96.jpg",
+                "previewUrl": null,
+                "provider": "local",
+                "provider_metadata": null,
+                "folderPath": "/5",
+                "createdAt": "2024-11-08T07:06:55.652Z",
+                "updatedAt": "2024-11-08T07:06:55.652Z"
+            },
+            "entity": "api::initiative.initiative"
+        }
+    ],
+    "meta": {
+        "pagination": {
+            "page": 1,
+            "pageSize": 10,
+            "pageCount": 1,
+            "total": 1,
+            "allCounts": {
+                "all": 1,
+                "api::program.program": 0,
+                "api::resource.resource": 0,
+                "api::initiative.initiative": 1,
+                "api::news.news": 0,
+                "api::publication.publication": 0
+            }
+        }
+    }
+}
+```
+
+#### 2. Search Title (Autocomplete)
+
+```http
+  GET /strapi-search-multilingual/search/autocomplete?locale=en&term=te
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `term` | `string` |  text to be searched in title and return autocompleted results|
+| `locale` | `string` |  locale for searching, default is 'en' |
+
+Response:  
+```json
+{
+    "data": [
+        "Test Initiative 1",
+        "Test Initiative 2"
+    ]
+}
+```
+
+---
+
+## Compatibility 🤝  
+This plugin is compatible with Strapi v4.  
+
+---
+
+
+## License 📜  
+This project is licensed under the [MIT License](./LICENSE).  
+
+---
+
+## Links and Resources 🔗  
+- [NPM Package](https://www.npmjs.com/package/strapi-search-multilingual)  
+- [Strapi Documentation](https://docs-v4.strapi.io/)
+- [Forked from ](https://www.npmjs.com/package/strapi-indexed-search-multilingual)
+---
+## Future Development
 - __Sync All function is not up to date - needs to be updated__
 
-## References
-
-- [Forked from ](pdalvi1893/strapi-indexed-search-multilingual)
+---
