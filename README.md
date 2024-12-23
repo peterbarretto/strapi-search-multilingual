@@ -62,7 +62,7 @@ yarn add strapi-search-multilingual
 
 Here’s an example configuration file:  
 
-```json
+```bash
 {
   search_filters: true,
     entities: [
@@ -149,7 +149,7 @@ Here’s an example configuration file:
 - `custom_populate`: this is for custom populating when fetching each entries details for the specified collection.
 
 3. **Search inside component configurations:**
-```json
+```bash
 entities: [
     { 
         name: "api::initiative.initiative",
@@ -168,7 +168,7 @@ entities: [
 - `populate`: this key is used to search in the component for specific field, add this in entities under the specific collection. Here we want to search in the Description field inside the componentname
 
 4. **Search inside dynamic zone configurations:**
-```json
+```bash
 entities: [
     { 
         name: "api::initiative.initiative",
@@ -197,7 +197,7 @@ entities: [
 
 #### 1. Search All collections for a search term
 
-```http
+```bash
   GET /strapi-search-multilingual/search/?locale=en&type=api::initiative.initiative&term=a&pagination[page]=2&pagination[pageSize]=10
 ```
 
@@ -270,7 +270,7 @@ Response:
 
 #### 2. Search Title (Autocomplete)
 
-```http
+```bash
   GET /strapi-search-multilingual/search/autocomplete?locale=en&term=te
 ```
 
