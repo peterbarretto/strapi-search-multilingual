@@ -18,8 +18,11 @@ Also it provides a way to search for page titles using the Auto-complete api.
 - **Autocomplete Feature**: Search the titles for any entry in any collection using the autocomplete api. Specify the Title field for the collection in the config file and that field will be searched while using the autocomplete api.
 - **Customizable**: Fine-tune search fields, language preferences, and filters for your unique needs.  
 - **Easy Integration**: Seamlessly integrates into your existing Strapi application with minimal setup.  
-- **Optimized Performance**: Efficient querying for large datasets and multilingual content.  
-
+- **Optimized Performance**: Efficient querying for large datasets and multilingual content.
+- **Search Collection**: A search collection is created by the plugin which has the content that will be searched. The path to the search collection is   
+```bash
+/admin/content-manager/collection-types/plugin::strapi-search-multilingual.search
+```
 ---
 
 ## Installation 🚀  
@@ -40,7 +43,8 @@ yarn add strapi-search-multilingual
 ## Usage 🛠️  
 
 1. **Setup Configuration**:  
-   After installation, add the plugin to your Strapi configuration. Configure the search fields and language preferences in your `plugin` settings.  
+   After installation, add the search config file at config/search.js in your strapi installation.
+   Example search config file is provided in this repo at search.config.example.js  
 
 2. **Run Your Strapi Application**:  
    Start your Strapi server to initialize the plugin:  
@@ -49,10 +53,13 @@ yarn add strapi-search-multilingual
    npm run develop
    ```
 
-3. **Use the Search API**:  
+3. **Edit and save entries that need to be searched**:  
+   Open entries in strapi dashboard and save those. This will create the entries in the Strapi search collection which will then be queried to give you the results.
+
+4. **Use the Search API**:  
    Query your multilingual content using the search endpoint provided by the plugin.  
 
-4. **Use the Auto complete API**:  
+5. **Use the Auto complete API**:  
    Query your multilingual Title field to get auto completed titles.  
 
 
@@ -267,6 +274,8 @@ Response:
     }
 }
 ```
+Screenshot:
+![Screenshot](https://raw.githubusercontent.com/peterbarretto/strapi-search-multilingual/refs/heads/main/screenshots/search-tabs.png)
 
 #### 2. Search Title (Autocomplete)
 
@@ -288,6 +297,13 @@ Response:
     ]
 }
 ```
+Screenshot:
+
+![Screenshot](https://raw.githubusercontent.com/peterbarretto/strapi-search-multilingual/refs/heads/main/screenshots/autocomplete-search.png)
+
+
+Search Collection Screenshot:
+![Screenshot](https://raw.githubusercontent.com/peterbarretto/strapi-search-multilingual/refs/heads/main/screenshots/search-collection-entry.png)
 
 ---
 
