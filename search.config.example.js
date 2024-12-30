@@ -1,4 +1,5 @@
 module.exports = {
+  search_filters: true,
     entities: [
       { 
         name: "api::news-and-publication.news-and-publication",
@@ -12,13 +13,21 @@ module.exports = {
         fields: ["PageTitle","Type"],
         title: "PageTitle",
         match_filters: { Type: "Publication" },
-        frontend_entity:"api::publication.publication",
+        frontend_entity: "api::publication.publication",
         repeated :1
       },
       {
         name:  "api::initiative.initiative",
         fields: ["PageTitle", "ShortDescription"],
         title: "PageTitle"
+      },
+      {
+        name:  "api::product.product",
+        fields: ["PageTitle", "ShortDescription"],
+        title: "PageTitle",
+        filters: { 
+          SearchPage:  true,
+        },
       },
       {
         name: "api::case.case",
@@ -35,15 +44,14 @@ module.exports = {
         frontend_entity: "api::de.de",
       },
     ],
-    search_filters: true,
-    map:{
-      others: [
-        "api::program.program",
-        "api::resource.resource",
+    map: {
+      others: [ 
+        "api::publication.publication",
+        "api::api::news.news",
         "api::initiative.initiative",
-        "api::news.news",
-        "api::publication.publication"
-      ],
+        "api::product.product",
+        "api::de.de"
+      ], 
       map_entity: [
         {
           passed: "api::news.news",
@@ -64,21 +72,21 @@ module.exports = {
           passed: "api::de.de",
           original_entity: "api::learning.learning",
           filters: { Category: { ParentPage: 2 } },
-        },
+        }
       ],
-      final_count : {
+      final_count: { 
         all: 0,
-        "api::program.program":0,
-        "api::resource.resource":0,
         "api::initiative.initiative":0,
         "api::news.news":0,
         "api::publication.publication":0,
+        "api::product.product":0,
         "api::de.de":0
-      }
+      },
     },
-    default_populate:{
+    default_populate: {
       PageSlug: true,
-      Thumbnail: true
+      Image: true,
+      ParentPage: true,
     },
     custom_populate:[
       {
@@ -88,8 +96,8 @@ module.exports = {
         }
       }
     ],
-    autocomplete:{
-      search_by: 'startswith' //contains or startswith is default
+    auto_complete:{
+      search_by: 'startswith' //contains or startswith , default is startswith
     }
-  };
+};
   

@@ -93,14 +93,38 @@ Here’s an example configuration file:
         fields: ["PageTitle", "ShortDescription"],
         title: "PageTitle"
       },
+      {
+        name:  "api::product.product",
+        fields: ["PageTitle", "ShortDescription"],
+        title: "PageTitle",
+        filters: { 
+          SearchPage:  true,
+        },
+      },
+      {
+        name: "api::case.case",
+        fields: ["PageTitle", "PageDescription"],
+        title: "PageTitle",
+        match_filters: { Category: { ParentPage: 2 } },
+        frontend_entity: "api::de.de"
+      },
+      {
+        name: "api::learning.learning",
+        fields: ["PageTitle", "PageDescription"],
+        title: "PageTitle",
+        match_filters: { Category: { ParentPage: 2 } },
+        frontend_entity: "api::de.de",
+      },
     ],
     map: {
       others: [ 
         "api::publication.publication",
         "api::api::news.news",
-        "api::initiative.initiative"
+        "api::initiative.initiative",
+        "api::product.product",
+        "api::de.de"
       ], 
-      map_entity: [
+      map_entity: [ //this is for complex search functionality
         {
           passed: "api::news.news",
           original_entity: "api::news-and-publication.news-and-publication",
@@ -111,12 +135,24 @@ Here’s an example configuration file:
           original_entity: "api::news-and-publication.news-and-publication",
           filters: { Type: "Publication" },
         },
+        {
+        passed: "api::de.de",
+        original_entity: "api::case.case",
+        filters: { Category: { ParentPage: 2 } },
+        },
+        {
+          passed: "api::de.de",
+          original_entity: "api::learning.learning",
+          filters: { Category: { ParentPage: 2 } },
+        },
       ],
       final_count: { 
         all: 0,
         "api::initiative.initiative":0,
         "api::news.news":0,
-        "api::publication.publication":0
+        "api::publication.publication":0,
+        "api::product.product":0,
+        "api::de.de": 0,
       },
     },
     default_populate: {
@@ -139,19 +175,20 @@ Here’s an example configuration file:
 ```
 
 1. **Main Configurations:**
-- `search_filters`: has to set to true to use the below keys.
-- `entities`: has all the entities that need to be searched.
-- `name`: is the collection that is present in strapi.
-- `fields`: all the fields that need to be searched in the strapi collection.
-- `title`: is used to specify the field that will be search for auto complete feature.
+- `search_filters`: (required) has to set to true to use the below keys.
+- `entities`: (required) has all the entities that need to be searched.
+- `name`: (required) is the collection that is present in strapi.
+- `fields`: (required) all the fields that need to be searched in the strapi collection.
+- `title`: (required) is used to specify the field that will be search for auto complete feature.
+- `filters`: this is used to filter if specify entries from a collection have to be searched and the others are not to be shown in the search results
 - `match_filters`: this is used to filter if the same collection has two different entities that need to be shown as different tabs on the search page.
 - `frontend_entity`: this is the entity name that is used on the frontend tabs to differentiate.
 
 
 2. **Other Configurations:**
-- `map.others`: this is used to set the list of filters that need to be filtered in the search results.
+- `map.others`: (required) this is used to set the list of filters that need to be filtered in the search results.
+- `map.final_count`: (required)this is used to set all the counts that you want to use in the frontend result.
 - `map.map_entity`: this is used to fetch the details of the entity if original_entity is set for the result entries.
-- `map.final_count`: this is used to set all the counts that you want to use in the frontend result.
 - `default_populate`: this is the default populate when fetching each entries details.
 - `custom_populate`: this is for custom populating when fetching each entries details for the specified collection.
 
