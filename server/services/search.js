@@ -166,7 +166,7 @@ module.exports = ({ strapi }) => ({
 
       //get custom populate
       if (customPopulate.length > 0) {
-        const custom = _.find(customPopulate, (item) => item.name === theentity);
+        const custom = _.find(customPopulate, (item) => item.name === theentity ||item.name===originalEntity);
         if (custom) {
           populate = { ...populate, ...custom.populate };
         }
@@ -321,7 +321,7 @@ module.exports = ({ strapi }) => ({
     if (contentType?.options?.draftAndPublish === true && !entity?.publishedAt) return true;
     
     for (const { code } of cultures) {
-      if (entity.locale === code) {
+      if (entity.locale === code || cultures.length==1) {
         if (searchFilters) {
           let theTitle = "";
           let theEntity = [];
@@ -460,4 +460,9 @@ module.exports = ({ strapi }) => ({
 
     return { data: _.map(theEntities, ({ title }) => title) };
   },
+  
+  async syncAllEntitiesTypes(ctx) {
+    const entities = strapi.config.get("search.sync_entities", [])||[];
+    return entities;
+  }
 });
