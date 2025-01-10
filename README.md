@@ -242,7 +242,7 @@ entities: [
 #### 1. Search All collections for a search term
 
 ```bash
-  GET /strapi-search-multilingual/search/?locale=en&type=api::initiative.initiative&term=a&pagination[page]=2&pagination[pageSize]=10
+  GET /api/strapi-search-multilingual/search/?locale=en&type=api::initiative.initiative&term=a&pagination[page]=2&pagination[pageSize]=10
 ```
 
 | Parameter | Type     | Description                |
@@ -317,7 +317,7 @@ Screenshot:
 #### 2. Search Title (Autocomplete)
 
 ```bash
-  GET /strapi-search-multilingual/search/autocomplete?locale=en&term=te
+  GET /api/strapi-search-multilingual/search/autocomplete?locale=en&term=te
 ```
 
 | Parameter | Type     | Description                |

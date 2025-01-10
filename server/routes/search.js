@@ -1,20 +1,36 @@
-// 'use strict';
+"use strict";
 
-// /**
-//  *  router
-//  */
+/**
+ *  router
+ */
 
-// const { createCoreRouter } = require('@strapi/strapi').factories;
-
-// module.exports = createCoreRouter('plugin::indexed-search.search');
-
-module.exports = [
-  {
-    method: "GET",
-    path: "/test",
-    handler: "search.index",
-    config: {
-      policies: [],
+module.exports = {
+  type: "content-api", // other type available: admin.
+  routes: [
+    {
+      method: 'GET',
+      path: '/search',
+      handler: 'search.index',
+      config: {
+        policies: [],
+      },
     },
-  },
-];
+    {
+      method: 'GET',
+      path: '/sync/sync',
+      handler: 'search.syncEntries',
+      config: {
+        policies: [],
+        auth: false,
+      },
+    },
+    {
+      method: 'GET',
+      path: '/search/autocomplete',
+      handler: 'search.autoComplete',
+      config: {
+        policies: [],
+      },
+    },
+  ],
+};
