@@ -17,18 +17,24 @@ const SyncButton = () => {
   const [{ query }] = useQueryParams();
   const queryParam = `?${stringify(query, { encode: false })}`;
   // console.log("queryParam:", queryParam);
-  useEffect(() => {
+  useEffect(async() => {
     var model = pathname.split("/").reverse()[0];
-    // console.log("pathname:", pathname, " || query", query);
-    if (COLLECTION_ENTITIES.indexOf(model) > -1) {
-      setDisplaySyncButtonState(true);
+    try {
+      const path = `/api/strapi-search-multilingual/search/sync-all-entities-types`;
+          const { data:{entities} } = await axiosInstance.get(path);
+       //console.log("entities:", entities);
+      if (entities && entities.indexOf(model) > -1) {
+        setDisplaySyncButtonState(true);
+      }
+    } catch (err) {
+      console.log("ERROR: ",err);
     }
   }, []);
 
   const handleSync = useCallback(async () => {
     setIsLoading(true);
     var model = pathname.split("/").reverse()[0];
-    await axiosInstance.get(`/strapi-search-multilingual/sync/sync`);
+    await axiosInstance.get(`/api/strapi-search-multilingual/sync/sync`);
 
     try {
       getData();

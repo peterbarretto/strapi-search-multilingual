@@ -26,6 +26,15 @@ module.exports = {
     },
     {
       method: 'GET',
+      path: '/search/sync-all-entities-types',
+      handler: 'search.syncAllEntitiesTypes',
+      config: {
+        policies: [],
+        auth: false,
+      },
+    },
+    {
+      method: 'GET',
       path: '/search/autocomplete',
       handler: 'search.autoComplete',
       config: {

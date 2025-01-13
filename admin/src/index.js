@@ -39,10 +39,10 @@ export default {
   },
 
   bootstrap(app) {
-    app.injectContentManagerComponent("listView", "actions", {
-      name: "SyncButton",
-      Component: SyncButton,
-    });
+    // app.injectContentManagerComponent("listView", "actions", {
+    //   name: "SyncButton",
+    //   Component: SyncButton,
+    // });
   },
   async registerTrads({ locales }) {
     const importedTrads = await Promise.all(

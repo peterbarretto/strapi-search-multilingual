@@ -463,6 +463,6 @@ module.exports = ({ strapi }) => ({
   
   async syncAllEntitiesTypes(ctx) {
     const entities = strapi.config.get("search.sync_entities", [])||[];
-    return entities;
+    return { entities};
   }
 });

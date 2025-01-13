@@ -23,6 +23,12 @@ module.exports = ({ strapi }) => ({
       .service("search")
       .syncEntries(ctx);
   },
+  async syncAllEntitiesTypes(ctx) {
+    return await strapi
+      .plugin("strapi-search-multilingual")
+      .service("search")
+      .syncAllEntitiesTypes(ctx);
+  },
   async autoComplete(ctx) {
     return await strapi
       .plugin("strapi-search-multilingual")
