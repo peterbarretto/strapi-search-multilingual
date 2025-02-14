@@ -37,6 +37,8 @@ module.exports = {
     ],
     auto_complete:{
       search_by: 'startswith' //contains or startswith , default is startswith
-    }
+    },
+    sync_entities:
+    ["api::initiative.initiative","api::product.product"]  
 };
   

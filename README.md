@@ -9,6 +9,7 @@ Strapi Search Multilingual is a powerful plugin designed to bring multilingual f
 Simple search plugin for __strapi 4__, which searches in __components__ and __dynamic zones__ also if needed.
 These components and dynamic zones field can be put in the populate in the entities search config.
 Also it provides a way to search for page titles using the Auto-complete api.
+One button to sync all entries in a collection to the search collection.
 
 ---
 
@@ -18,6 +19,7 @@ Also it provides a way to search for page titles using the Auto-complete api.
 - **Autocomplete Feature**: Search the titles for any entry in any collection using the autocomplete api. Specify the Title field for the collection in the config file and that field will be searched while using the autocomplete api.
 - **Customizable**: Fine-tune search fields, language preferences, and filters for your unique needs.  
 - **Easy Integration**: Seamlessly integrates into your existing Strapi application with minimal setup.  
+- **Easy Sync**: One button to sync all entries to the search collection.  
 - **Optimized Performance**: Efficient querying for large datasets and multilingual content.
 - **Search Collection**: A search collection is created by the plugin which has the content that will be searched. The path to the search collection is   
 ```bash
@@ -56,10 +58,13 @@ yarn add strapi-search-multilingual
 3. **Edit and save entries that need to be searched**:  
    Open entries in strapi dashboard and save those. This will create the entries in the Strapi search collection which will then be queried to give you the results.
 
-4. **Use the Search API**:  
+4. **Sync collections using the single Sync Button in the Dashboard**:
+   Add the collections that you want the Sync button to be avalaible in the CMS
+
+5. **Use the Search API**:  
    Query your multilingual content using the search endpoint provided by the plugin.  
 
-5. **Use the Auto complete API**:  
+6. **Use the Auto complete API**:  
    Query your multilingual Title field to get auto completed titles.  
 
 
@@ -97,7 +102,7 @@ module.exports = {
       ],
       final_count: { 
         all: 0,
-        "api::publication.publication":0,
+        "api::initiative.initiative":0,
         "api::product.product":0,
       },
     },
@@ -110,7 +115,9 @@ module.exports = {
     ],
     auto_complete:{
       search_by: 'startswith' //contains or startswith , default is startswith
-    }
+    },
+    sync_entities:
+    ["api::initiative.initiative","api::product.product"],
 };
   
 ```
@@ -122,6 +129,7 @@ module.exports = {
 - `fields`: (required) all the fields that need to be searched in the strapi collection.
 - `title`: (required) is used to specify the field that will be search for auto complete feature.
 - `filters`: this is used to filter if specify entries from a collection have to be searched and the others are not to be shown in the search results
+- `sync_entities`: this is used to specify which all entities will have the Sync Search Items button
 
 2. **Other Configurations:**
 - `map.others`: (required) this is used to set the list of filters that need to be filtered in the search results.
@@ -286,6 +294,14 @@ Screenshot:
 
 Search Collection Screenshot:
 ![Screenshot](https://raw.githubusercontent.com/peterbarretto/strapi-search-multilingual/refs/heads/main/screenshots/search-collection-entry.png)
+
+
+Sync Search Button Screenshot:
+![Screenshot](https://raw.githubusercontent.com/peterbarretto/strapi-search-multilingual/refs/heads/main/screenshots/sync-button.png)
+
+
+Sync Search Collection Config Screenshot:
+![Screenshot](https://raw.githubusercontent.com/peterbarretto/strapi-search-multilingual/refs/heads/main/screenshots/sync-button-config.png)
 
 ---
 
