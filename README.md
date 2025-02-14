@@ -306,6 +306,6 @@ This project is licensed under the [MIT License](./LICENSE).
 - [Forked from ](https://www.npmjs.com/package/strapi-indexed-search-multilingual)
 ---
 ## Future Development
-- __Sync All function is not up to date - needs to be updated__
+- __optimization of code__
 
 ---
