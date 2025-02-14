@@ -17,7 +17,7 @@ module.exports = {
     },
     {
       method: 'GET',
-      path: '/sync/sync',
+      path: '/search/sync-all',
       handler: 'search.syncEntries',
       config: {
         policies: [],

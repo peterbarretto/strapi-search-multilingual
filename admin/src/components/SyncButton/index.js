@@ -7,7 +7,6 @@ import { useNotification, useQueryParams } from "@strapi/helper-plugin";
 import { useLocation } from "react-router-dom";
 import { stringify } from "qs";
 import { getData, getDataSucceeded } from "./actions";
-import { COLLECTION_ENTITIES } from "./constants";
 
 const SyncButton = () => {
   const [displaySyncButton, setDisplaySyncButtonState] = useState(false);
@@ -16,25 +15,34 @@ const SyncButton = () => {
   const { pathname } = useLocation();
   const [{ query }] = useQueryParams();
   const queryParam = `?${stringify(query, { encode: false })}`;
-  // console.log("queryParam:", queryParam);
-  useEffect(async() => {
-    var model = pathname.split("/").reverse()[0];
-    try {
-      const path = `/api/strapi-search-multilingual/search/sync-all-entities-types`;
-          const { data:{entities} } = await axiosInstance.get(path);
-       //console.log("entities:", entities);
-      if (entities && entities.indexOf(model) > -1) {
-        setDisplaySyncButtonState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const path = `/api/strapi-search-multilingual/search/sync-all-entities-types`;
+        const response = await axiosInstance.get(path);
+        
+        var model = pathname.split("/").reverse()[0];
+ 
+        if (response.data.entities && response.data.entities.indexOf(model) > -1) {
+          setDisplaySyncButtonState(true);
+        }
+      } catch (error) {
+        console.error('Error:', error);
       }
-    } catch (err) {
-      console.log("ERROR: ",err);
-    }
-  }, []);
+    };
+
+    fetchData();
+  
+    // Optional cleanup function
+    return () => {
+    };
+  }, [pathname]);
 
   const handleSync = useCallback(async () => {
     setIsLoading(true);
-    var model = pathname.split("/").reverse()[0];
-    await axiosInstance.get(`/api/strapi-search-multilingual/sync/sync`);
+    var model = pathname.split('/').reverse()[0];
+    await axiosInstance.get(`/api/strapi-search-multilingual/search/sync-all/?model=${model}`);
 
     try {
       getData();
@@ -44,15 +52,15 @@ const SyncButton = () => {
       } = await axiosInstance.get(path);
       getDataSucceeded(paginationResult, results);
       toggleNotification({
-        type: "success",
-        message: "Sync completed successfully",
+        type: 'success',
+        message: 'Sync completed successfully',
       });
       setIsLoading(false);
       window.location.reload();
     } catch (err) {
       toggleNotification({
-        type: "error",
-        message: "Sync not completed",
+        type: 'error',
+        message: 'Sync not completed',
       });
     }
   }, [toggleNotification, getData, getDataSucceeded]);
