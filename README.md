@@ -293,14 +293,17 @@ Screenshot:
 
 
 Search Collection Screenshot:
+
 ![Screenshot](https://raw.githubusercontent.com/peterbarretto/strapi-search-multilingual/refs/heads/main/screenshots/search-collection-entry.png)
 
 
 Sync Search Button Screenshot:
+
 ![Screenshot](https://raw.githubusercontent.com/peterbarretto/strapi-search-multilingual/refs/heads/main/screenshots/sync-button.png)
 
 
 Sync Search Collection Config Screenshot:
+
 ![Screenshot](https://raw.githubusercontent.com/peterbarretto/strapi-search-multilingual/refs/heads/main/screenshots/sync-button-config.png)
 
 ---
