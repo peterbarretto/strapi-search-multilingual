@@ -1,17 +1,17 @@
-// 'use strict';
-
-// /**
-//  *  service
-//  */
-
-// const { createCoreService } = require('@strapi/strapi').factories;
-
-// module.exports = createCoreService('plugin::indexed-search.search');
-
 "use strict";
 
 const _ = require("lodash");
-const deepPopulate = require("./../helpers/populate").default;
+
+const OMITTED_FIELDS = [
+  "localizations",
+  "createdBy",
+  "createdAt",
+  "publishedAt",
+  "updatedAt",
+  "updatedBy",
+  "locale",
+  "id",
+];
 
 const navigateObject = (obj) => {
   let result = [];
@@ -173,7 +173,7 @@ module.exports = ({ strapi }) => ({
       }
 
       let queryKey = originalEntity !== 'default' ? originalEntity : theentity;
-  
+
       let orderedList = _.map(searchGrouped[compositeKey], ({ entity_id }) => entity_id);
       let entity = {
         api: theentity,
@@ -211,102 +211,73 @@ module.exports = ({ strapi }) => ({
 
   async syncEntries(ctx) {
     const cultures = await strapi.plugins.i18n.services.locales.find();
-    let entities = strapi.config.get(
-      "search.entities",
-      "defaultValueIfUndefined"
-    );
 
     const searchFilters = strapi.config.get("search.search_filters") || null;
-
-    let promises = [];
-    for (const { code } of cultures) {
-      for (let entity of entities) {
-        //let condition = { populate: "*" };
-        if (!entity?.publishedAt) return true;
-        if (searchFilters) {
-          let searchEntity = _.find(
-            entities,
-            (item) => item.name === entity.name
-          );
-          const { fields, filters = {}, populate = {} } = searchEntity || {};
-
-          const theEntities = await strapi.entityService.findMany(entity.name, {
-            fields,
-            filters: { ...filters }, // Spread existing filters with id
-            populate,
-            locale: code,
-          });
-          if (theEntities.length == 0) continue;
-
-          _.each(theEntities, (entityItem) => {
-            const Values = getAllValues(entityItem);
-            _.each(Values, (item) => {
-              if (item)
-                strapi.entityService.create(
-                  "plugin::strapi-search-multilingual.search",
-                  {
-                    data: {
-                      entity_id: entityItem.id,
-                      entity: searchEntity.name,
-                      content: item,
-                      locale: code,
-                    },
-                  }
-                );
-            });
-          });
-        } else {
-          let condition = { populate: deepPopulate(entity.name), locale: code };
-          if (entity.filters) {
-            condition.filters = entity.filters;
-          }
-
-          let entries = await strapi.entityService.findMany(entity.name, {
-            ...condition,
-          });
-
-          _.each(entries, (entry) => {
-            let propArray = navigateObject(
-              _.omit(entry, [
-                "localizations",
-                "createdBy",
-                "createdAt",
-                "publishedAt",
-                "updatedAt",
-                "updatedBy",
-                "locale",
-                "id",
-              ])
-            );
-
-            _.each(propArray, (item, key) => {
-              if (entity.fields.indexOf(Object.keys(item)[0]) > -1) {
-                promises.push(
-                  strapi.entityService.create(
-                    "plugin::strapi-search-multilingual.search",
-                    {
-                      data: {
-                        entity_id: entry.id,
-                        entity: entity.name,
-                        content: item[Object.keys(item)[0]],
-                        locale: code,
-                      },
-                    }
-                  )
-                );
-              }
-            });
-          });
+    const { model = '' } = ctx.request.query;
+    if(model=='')
+      return false;
+    if(!searchFilters)
+      return false;
+    const searchEntities = _.filter(
+      strapi.config.get("search.entities", {}),
+      (item) => item.name === model
+    );
+    //delete all the old entries
+    const where = {
+      $or : [
+        {
+          entity: model,
+        },
+        {
+          original_entity: model,
         }
+      ]  
+    };
+    strapi.db
+      .query("plugin::strapi-search-multilingual.search")
+      .deleteMany({
+        where,
+      });
+   
+    for (const searchEntity of searchEntities) {
+      for (const { code } of cultures) {
+        await this.processSearchFiltersSyncAll(searchEntity, code);
       }
-    }
-
-    await Promise.all(promises);
+    }  
 
     return "data synced";
   },
 
-  async syncSingleItem(entity, name) {
+
+  async processSearchFiltersSyncAll(searchEntity, locale) {
+  
+      const {
+        fields,
+        filters = {},
+        match_filters = {},
+        populate = {},
+        title = "PageTitle",
+        frontend_entity,
+      } = searchEntity;
+
+      const entities = await strapi.entityService.findMany(searchEntity.name, {
+        fields,
+        filters: { ...filters, ...match_filters },
+        populate,
+        locale,
+      });
+
+      for (const entity of entities) {
+        const theTitle = entity[title];
+        const originalEntity = frontend_entity ? searchEntity.name : '';
+        const entityName = frontend_entity || searchEntity.name;
+
+        await this.createSearchEntry(entity.id, entityName, originalEntity, locale, theTitle, entity);
+      }
+      return true;
+  },
+
+  async syncSingleItemOld(entity, name) {
     const cultures = await strapi.plugins.i18n.services.locales.find();
     let searchEntity = _.filter(
       strapi.config.get("search.entities", "defaultValueIfUndefined"),
@@ -319,7 +290,7 @@ module.exports = ({ strapi }) => ({
 
     //if draft mode exist then skip the entry if not published
     if (contentType?.options?.draftAndPublish === true && !entity?.publishedAt) return true;
-    
+
     for (const { code } of cultures) {
       if (entity.locale === code || cultures.length==1) {
         if (searchFilters) {
@@ -438,7 +409,140 @@ module.exports = ({ strapi }) => ({
       }
     }
   },
-  async autoComplete(ctx) {
+
+  async syncSingleItem(entity, name) {
+    const cultures = await strapi.plugins.i18n.services.locales.find();
+    const searchEntities = _.filter(
+      strapi.config.get("search.entities", "defaultValueIfUndefined"),
+      (item) => item.name === name
+    );
+    const searchFilters = strapi.config.get("search.search_filters") || null;
+
+    const contentType = await strapi
+      .plugin("content-manager")
+      .service("content-types")
+      .findContentType(name);
+
+    // Early return if content type has draft mode and entity isn't published
+    if (contentType?.options?.draftAndPublish === true && !entity?.publishedAt) return true;
+
+    for (const { code } of cultures) {
+      if (entity.locale !== code && cultures.length > 1) continue;
+
+      if (searchFilters) {
+        if(searchEntities.length>1)
+          await this.processWithSearchFiltersMany(entity, searchEntities, code);
+        else
+          await this.processWithSearchFiltersOne(entity, searchEntities, code);
+      } else {
+        await this.processWithoutSearchFilters(entity, searchEntities, code);
+      }
+    }
+    return true;
+  },
+
+  async processWithSearchFiltersOne(entity, searchEntities, locale) {
+
+    const searchEntity = searchEntities[0];
+   
+      const {
+        fields,
+        filters = {},
+        populate = {},
+        title = "PageTitle",
+        frontend_entity,
+      } = searchEntity;
+
+      const entities = await strapi.entityService.findMany(searchEntity.name, {
+        fields,
+        filters: { ...filters, id: entity.id },
+        populate,
+        locale,
+      });
+
+      if (entities.length === 1 ) {
+        const theTitle = entities[0][title];
+        const originalEntity = frontend_entity ? searchEntity.name : '';
+        const entityName = frontend_entity || searchEntity.name;
+
+        await this.createSearchEntry(entity.id, entityName, originalEntity, locale, theTitle, entities);
+      }
+      return true;
+  },
+
+  async processWithSearchFiltersMany(entity, searchEntities, locale) {
+    let skip = false;
+
+    for (const searchEntity of searchEntities) {
+      if (skip) break;
+
+      const {
+        fields,
+        match_filters = {},
+        populate = {},
+        title = "PageTitle",
+        frontend_entity,
+      } = searchEntity;
+
+      const entities = await strapi.entityService.findMany(searchEntity.name, {
+        fields,
+        filters: { ...match_filters, id: entity.id },
+        populate,
+        locale,
+      });
+
+      if (entities.length == 1) {
+        const theTitle = entities[0][title];
+        const originalEntity = frontend_entity ? searchEntity.name : '';
+        const entityName = frontend_entity || searchEntity.name;
+
+        await this.createSearchEntry(entity.id, entityName, originalEntity, locale, theTitle, entities);
+        skip = true;
+      }
+    }
+    return true;
+  },
+
+  async processWithoutSearchFilters(entity, searchEntities, locale) {
+    const propArray = navigateObject(_.omit(entity, OMITTED_FIELDS));
+
+    _.each(propArray, (item) => {
+      const fieldName = Object.keys(item)[0];
+      if (searchEntities[0].fields.includes(fieldName)) {
+        strapi.entityService.create("plugin::strapi-search-multilingual.search", {
+          data: {
+            entity_id: entity.id,
+            entity: searchEntities[0].name,
+            content: item[fieldName],
+            locale,
+          },
+        });
+      }
+    });
+    return true;
+  },
+
+async createSearchEntry(entityId, entityName, originalEntity, locale, title, entities) {
+  const content = getAllValues(entities)
+    .filter(Boolean)
+    .join("  ");
+
+  if (content) {
+    strapi.entityService.create("plugin::strapi-search-multilingual.search", {
+      data: {
+        entity_id: entityId,
+        original_entity: originalEntity,
+        entity: entityName,
+        content,
+        locale,
+        title,
+      },
+    });
+  }
+  return true;
+},
+
+async autoComplete(ctx) {
     const { term, locale } = ctx.request.query;
     const search = strapi.config.get("search", "defaultValueIfUndefined");
 
