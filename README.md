@@ -55,11 +55,11 @@ yarn add strapi-search-multilingual
    npm run develop
    ```
 
-3. **Edit and save entries that need to be searched**:  
-   Open entries in strapi dashboard and save those. This will create the entries in the Strapi search collection which will then be queried to give you the results.
+3. **Sync collections using the single Sync Button in the Dashboard**:
+   Add the collections that you want the Sync button to be avalaible in the CMS. Click Sync and all the entries will be synced to the search collection.
 
-4. **Sync collections using the single Sync Button in the Dashboard**:
-   Add the collections that you want the Sync button to be avalaible in the CMS
+4. **Edit and save entries that need to be updated after the sync**:  
+   Open entries in strapi dashboard and save those. This will create the entries in the Strapi search collection.
 
 5. **Use the Search API**:  
    Query your multilingual content using the search endpoint provided by the plugin.  
@@ -300,7 +300,7 @@ Search Collection Screenshot:
 Sync Search Button Screenshot:
 
 ![Screenshot](https://raw.githubusercontent.com/peterbarretto/strapi-search-multilingual/refs/heads/main/screenshots/sync-button.png)
-
+To get the above button add the collections as shown below in the config file
 
 Sync Search Collection Config Screenshot:
 
