@@ -25,6 +25,11 @@ One button to sync all entries in a collection to the search collection.
 ```bash
 /admin/content-manager/collection-types/plugin::strapi-search-multilingual.search
 ```
+Search Collection Listing Screenshot:
+
+![Screenshot](https://raw.githubusercontent.com/peterbarretto/strapi-search-multilingual/refs/heads/main/screenshots/search-collection-listing.png)
+
+
 ---
 
 ## Installation 🚀  
