@@ -1,7 +1,7 @@
 {
   "name": "strapi-search-multilingual",
-  "version": "1.2.2",
-  "description": "Simple strapi 4 multilingual search",
+  "version": "1.2.3",
+  "description": "Simple strapi 4 search with multilanguage support",
   "strapi": {
     "name": "strapi-search-multilingual",
     "description": "Helps search all collections in strapi, inside components and dynamic zones also. Autocomplete api also provided for searching title attribute as configured in the search config file",
@@ -29,12 +29,14 @@
   },
   "keywords": [
     "strapi 4",
+    "strapi 4 search",
+    "strapi 4 search plugin",
     "search",
-    "multilingual search",
+    "multilanguage search",
     "search multilingual",
     "search plugin",
     "strapi 4 plugin",
-    "autocomplete"
+    "strapi autocomplete plugin"
   ],
   "author": {
     "name": "A Strapi developer"

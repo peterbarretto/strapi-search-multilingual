@@ -24,7 +24,7 @@ module.exports = {
       ],
       final_count: { 
         all: 0,
-        "api::publication.publication":0,
+        "api::initiative.initiative":0,
         "api::product.product":0,
       },
     },
