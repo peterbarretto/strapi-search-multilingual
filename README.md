@@ -1,5 +1,5 @@
 
-# Strapi Search Multilingual 🌍🔍  
+# Strapi V4 Search Multilingual 🌍🔍  
 [![npm version](https://img.shields.io/npm/v/strapi-search-multilingual)](https://www.npmjs.com/package/strapi-search-multilingual)  
 [![License](https://img.shields.io/npm/l/strapi-search-multilingual)](./LICENSE)  
 [![Downloads](https://img.shields.io/npm/dm/strapi-search-multilingual)](https://www.npmjs.com/package/strapi-search-multilingual)
@@ -327,6 +327,7 @@ This project is licensed under the [MIT License](./LICENSE).
 ## Links and Resources 🔗  
 - [NPM Package](https://www.npmjs.com/package/strapi-search-multilingual)  
 - [Strapi Documentation](https://docs-v4.strapi.io/)
+- [Strapi V5 Search Plugin](https://www.npmjs.com/package/strapi-v5-search-multilingual)
 - [Forked from ](https://www.npmjs.com/package/strapi-indexed-search-multilingual)
 ---
 ## Future Development

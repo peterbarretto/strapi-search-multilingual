@@ -1,12 +1,12 @@
 {
   "name": "strapi-search-multilingual",
-  "version": "1.2.3",
-  "description": "Simple strapi 4 search with multilanguage support",
+  "version": "1.2.4",
+  "description": "Simple strapi V4 search with multilanguage support",
   "strapi": {
     "name": "strapi-search-multilingual",
     "description": "Helps search all collections in strapi, inside components and dynamic zones also. Autocomplete api also provided for searching title attribute as configured in the search config file",
     "kind": "plugin",
-    "displayName": "Strapi 4 Search Multilingual"
+    "displayName": "Strapi V4 Search Multilingual"
   },
   "dependencies": {
     "@strapi/design-system": "^1.6.3",
@@ -25,6 +25,7 @@
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-router-dom": "^5.2.0",
+    "@strapi/strapi": "^4.0.0",
     "styled-components": "^5.2.1"
   },
   "keywords": [
@@ -39,15 +40,15 @@
     "strapi autocomplete plugin"
   ],
   "author": {
-    "name": "A Strapi developer"
+    "name": "Peter P Barretto"
   },
   "maintainers": [
     {
-      "name": "A Strapi developer"
+      "name": "Peter P Barretto"
     }
   ],
   "engines": {
-    "node": ">=18.0.0 <=20.x.x",
+    "node": ">=18.0.0 <=22.x.x",
     "npm": ">=6.0.0"
   },
   "license": "MIT"
