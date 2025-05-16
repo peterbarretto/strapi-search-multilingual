@@ -266,6 +266,8 @@ module.exports = ({ strapi }) => ({
 
   async syncSingleItem(entity, name) {
     const cultures = await strapi.plugins.i18n.services.locales.find();
+    const defaultLocale = await strapi.plugins.i18n.services.locales.getDefaultLocale();
+
     const searchEntities = _.filter(
       strapi.config.get("search.entities", "defaultValueIfUndefined"),
       (item) => item.name === name
@@ -282,7 +284,10 @@ module.exports = ({ strapi }) => ({
       return true;
 
     for (const { code } of cultures) {
-      if (entity.locale !== code && cultures.length > 1) continue;
+      //check to run only for the specific locale
+      //if two locales for site but collection has single locale then exit for the non-default locale
+      if ((entity.locale !== code && cultures.length > 1 && contentType?.pluginOptions?.i18n?.localized)
+        ||(!contentType?.pluginOptions?.i18n?.localized && defaultLocale!==code)) continue;
 
       if (searchFilters) {
         if (searchEntities.length > 1)
